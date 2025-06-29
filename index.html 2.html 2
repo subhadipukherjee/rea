@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animal Game</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: #e6f7ff;
+      font-family: Comic Sans MS;
+    }
+    h1 {
+      color: #ff4081;
+      margin-top: 20px;
+    }
+    .animal {
+      display: inline-block;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .animal img {
+      width: 130px;
+      height: 130px;
+      border-radius: 20px;
+      box-shadow: 2px 2px 10px gray;
+    }
+    button {
+      margin: 20px;
+      padding: 10px 20px;
+      font-size: 20px;
+      border-radius: 10px;
+      border: none;
+      background-color: #ffcc00;
+      color: #000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🐾 Tap the Animal 🐾</h1>
+
+  <div id="game-mode">
+    <div class="animal" onclick="playSound('cow')">
+      <img src="cow.png" alt="Cow" />
+      <p>Cow</p>
+    </div>
+    <div class="animal" onclick="playSound('cat')">
+      <img src="cat.png" alt="Cat" />
+      <p>Cat</p>
+    </div>
+    <div class="animal" onclick="playSound('dog')">
+      <img src="dog.png" alt="Dog" />
+      <p>Dog</p>
+    </div>
+  </div>
+
+  <button onclick="startQuiz()">🎯 Start Quiz</button>
+
+  <div id="quiz-mode" style="display:none;">
+    <h2 id="quiz-question">Which animal makes this sound?</h2>
+    <audio id="quiz-audio"></audio>
+    <div id="quiz-options"></div>
+    <p id="quiz-feedback" style="font-size: 24px; color: green;"></p>
+    <button onclick="startQuiz()">Next ➡️</button>
+  </div>
+
+  <!-- Animal Sounds -->
+  <audio id="cow" src="cow.mp3"></audio>
+  <audio id="cat" src="cat.mp3"></audio>
+  <audio id="dog" src="dog.mp3"></audio>
+
+  <script>
+    const animals = [
+      { name: "Cow", image: "cow.png", sound: "cow.mp3" },
+      { name: "Cat", image: "cat.png", sound: "cat.mp3" },
+      { name: "Dog", image: "dog.png", sound: "dog.mp3" },
+    ];
+
+    function playSound(animal) {
+      document.getElementById(animal).play();
+    }
+
+    function startQuiz() {
+      document.getElementById('game-mode').style.display = 'none';
+      document.getElementById('quiz-mode').style.display = 'block';
+      document.getElementById('quiz-feedback').textContent = '';
+
+      let correctAnimal = animals[Math.floor(Math.random() * animals.length)];
+      let options = shuffleArray([...animals]);
+
+      document.getElementById('quiz-audio').src = correctAnimal.sound;
+      document.getElementById('quiz-audio').play();
+
+      let quizOptions = document.getElementById('quiz-options');
+      quizOptions.innerHTML = '';
+
+      options.forEach(animal => {
+        let div = document.createElement('div');
+        div.className = 'animal';
+        div.innerHTML = `<img src="${animal.image}"><p>${animal.name}</p>`;
+        div.onclick = () => {
+          if (animal.name === correctAnimal.name) {
+            document.getElementById('quiz-feedback').textContent = "✅ Correct!";
+          } else {
+            document.getElementById('quiz-feedback').textContent = "❌ Try Again!";
+          }
+        };
+        quizOptions.appendChild(div);
+      });
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+</body>
+</html>
